@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PureComponent from './PureComponent';
-
+import {Map} from 'immutable';
 
 //组件优化的原理是重写了shouldComponentUpdate，如果说老的状态对象和新的状态对象不是一个对象才需要刷新
 
@@ -13,31 +13,20 @@ import PureComponent from './PureComponent';
 
 class Counter extends PureComponent {
   state = {
-    counter: {number: 0}
+    counter: Map({number: 0})
   };
 
   handleClick = (event) => {
-    let state = this.state
-      , amount = this.amount.value ? Number(this.amount.value) : 0;
+    let amount = this.amount.value ? Number(this.amount.value) : 0;
+    let state = {...this.state, counter: this.state.counter.update('number', val => val + amount)};
+    this.setState(state);
 
-    // state.counter.number = state.counter.number + amount;
-    // this.setState(state);
-
-    //状态不向Vue里的data，不用声明，也会触发响应式渲染
-    // state.counter = state.counter ? state.counter : {};
-    // state.counter.number = state.counter.number ? state.counter.number : 0;
-
-    this.setState({
-      counter: {
-        number: state.counter.number + amount
-      }
-    });
   };
 
   render() {
     return (
       <div>
-        <p>{this.state.counter.number}</p>
+        <p>{this.state.counter.get('number')}</p>
         <input ref={x => this.amount = x}/>
         <button onClick={this.handleClick}>+</button>
       </div>
