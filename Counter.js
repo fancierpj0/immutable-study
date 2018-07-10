@@ -40,6 +40,7 @@ let actions = {
 //state是合并后的state
 //TODO 它也应该是一个immutable对象
 export default connect(
-  state => ({number: state.counter.get('number')})
+  // state => ({number: state.counter.get('number')})
+  state => ({number: state.getIn(['counter','number'])})
   , actions
 )(Counter);
